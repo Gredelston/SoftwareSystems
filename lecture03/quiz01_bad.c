@@ -5,7 +5,7 @@ License: GNU GPLv3
 
 */
 
-#include <stdio.h>;
+#include <stdio.h>
 
 // Checks whether a character is a digit.
 int is_digit(char c) {
