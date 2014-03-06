@@ -25,6 +25,18 @@ typedef struct {
     regex_t inner_struct[1];
 } Regex;
 
+void perror_exit (char *s)
+{
+  perror (s);
+  exit (-1);
+}
+
+void *check_malloc(int size)
+{
+  void *p = malloc (size);
+  if (p == NULL) perror_exit ("malloc failed");
+  return p;
+}
 
 // Returns a new Regex that matches the given pattern.
 // pattern: string regex
@@ -32,7 +44,15 @@ typedef struct {
 // returns: new Regex 
 Regex *make_regex(char *pattern, int flags) {
     // FILL THIS IN
-    return NULL;
+    int ret;
+
+    Regex *r = check_malloc (sizeof(Regex));
+    ret = regcomp(r->inner_struct, pattern, REG_EXTENDED | REG_NOSUB);
+    if (ret) {
+        fprintf(stderr, "Could not compile regex\n");
+        exit(1);
+    }
+    return r;
 }
 
 // Checks whether a regex matches a string.
@@ -40,14 +60,31 @@ Regex *make_regex(char *pattern, int flags) {
 // s: string
 // returns: 1 if there's a match, 0 otherwise
 int regex_match(Regex *regex, char *s) {
-    // FILL THIS IN
+    int i;
+    int ret;
+    char msgbuf[100];
+
+    for (i=0; i<NUM_TRACKS; i++) {
+        ret = regexec(regex->inner_struct, tracks[i], 0, NULL, 0);
+        if (!ret) {
+            // printf("Track %i: '%s'\n", i, tracks[i]);
+            return 1;
+        } else if (ret == REG_NOMATCH) {
+            continue;
+        } else {
+            regerror(ret, regex->inner_struct, msgbuf, sizeof(msgbuf));
+            // fprintf(stderr, "Regex match failed: %s\n", msgbuf);
+        }
+    }
     return 0;
 }
 
 // Frees a Regex.
 // regex: Regex
 void regex_free(Regex *regex) {
-    // FILL THIS IN
+    regfree(regex->inner_struct);
+    free(regex);
+
 }
 
 

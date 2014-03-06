@@ -88,7 +88,7 @@ static void tutorial_index( mongo *conn ) {
   bson_append_int( key, "name", 1 );
   bson_finish( key );
 
-  mongo_create_index( conn, "tutorial.persons", key, NULL, 0, NULL );
+  mongo_create_index( conn, "tutorial.persons", key, NULL, 0, 0, NULL );
 
   bson_destroy( key );
 
@@ -99,7 +99,7 @@ static void tutorial_index( mongo *conn ) {
   bson_append_int( key, "name", 1 );
   bson_finish( key );
 
-  mongo_create_index( conn, "tutorial.persons", key, NULL, 0, NULL );
+  mongo_create_index( conn, "tutorial.persons", key, NULL, 0, 0, NULL );
 
   bson_destroy( key );
 

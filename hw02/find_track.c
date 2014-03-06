@@ -24,7 +24,7 @@ char tracks[][82] = {
 // Finds all tracks that contain the given string.
 //
 // Prints track number and title.
-void find_track(char search_for[])
+void find_track(char *search_for)
 {
     int i;
     for (i=0; i<NUM_TRACKS; i++) {
@@ -38,7 +38,7 @@ void find_track(char search_for[])
 //
 // Prints track number and title.
 // Shamelessly based on http://www.peope.net/old/regex.html
-void find_track_regex(char pattern[])
+void find_track_regex(char *pattern)
 {
     regex_t regex;
     int reti;
