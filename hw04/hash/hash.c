@@ -189,8 +189,12 @@ typedef struct node {
 /* Makes a Node. */
 Node *make_node(Hashable *key, Value *value, Node *next)
 {
-    // FIX ME!
-    return NULL;
+    // FIX ME!done
+    Node *node = (Node *) malloc (sizeof (Node));
+    node->key = key;
+    node->value = value;
+    node->next = next;
+    return node;
 }
 
 
@@ -199,14 +203,17 @@ void print_node(Node *node)
 {
     print_hashable(node->key);
     printf ("value %p\n", node->value);
-    printf ("next %p\n", node->next);
+    printf ("next %p\n\n", node->next);
 }
 
 
 /* Prints all the Nodes in a list. */
 void print_list(Node *node)
 {
-    // FIX ME!
+    // FIX ME!done
+    print_node(node);
+    if (node->next != NULL)
+        print_list (node->next);
 }
 
 
@@ -223,13 +230,17 @@ Node *prepend(Hashable *key, Value *value, Node *rest)
 /* Looks up a key and returns the corresponding value, or NULL */
 Value *list_lookup(Node *list, Hashable *key)
 {
-    // FIX ME!
-    return NULL;
+    if (list->key == key)
+        return list->value;
+    else if (list->next == NULL)
+        return NULL;
+    else
+        return list_lookup(list->next, key);
 }
 
 
 // MAP: a map is a list of key-value pairs
-
+            
 typedef struct map {
     int n;
     Node **lists;
@@ -239,8 +250,12 @@ typedef struct map {
 /* Makes a Map with n lists. */
 Map *make_map(int n)
 {
-    // FIX ME!
-    return NULL;
+    // FIX ME! done
+    Map *m = (Map *) malloc (sizeof(Map));
+    m->n = n;
+    Node **lists = (Node **) malloc ( sizeof(Node[n]) );
+    m->lists = lists;
+    return m;
 }
 
 
@@ -257,19 +272,28 @@ void print_map(Map *map)
     }
 }
 
-
 /* Adds a key-value pair to a map. */
 void map_add(Map *map, Hashable *key, Value *value)
 {
-    // FIX ME!
+    // FIX ME! done
+    int index;
+    Node *list;
+
+    index = hash_hashable(key) % map->n;
+    list = (map->lists)[index];
+    (map->lists)[index] = make_node(key, value, list);
 }
 
 
 /* Looks up a key and returns the corresponding value, or NULL. */
 Value *map_lookup(Map *map, Hashable *key)
 {
-    // FIX ME!
-    return NULL;
+    int index;
+    Node *list;
+
+    index = hash_hashable(key) % map->n;
+    list = (map->lists)[index];
+    return list_lookup(list, key);
 }
 
 
