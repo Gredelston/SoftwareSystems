@@ -146,13 +146,69 @@ double *row_sum(Matrix *A) {
     double *res = malloc(A->rows * sizeof(double));
 
     for (i=0; i<A->rows; i++) {
-	total = 0.0;
-	for (j=0; j<A->cols; j++) {
-	    total += A->data[i][j];
-	}
-	res[i] = total;
+    	total = 0.0;
+    	for (j=0; j<A->cols; j++) {
+    	    total += A->data[i][j];
+    	}
+    	res[i] = total;
     }
     return res;
+}
+
+double *col_sum(Matrix *A) {
+    double total;
+    int i, j;
+
+    double *res = malloc(A->rows * sizeof(double));
+
+    for (i=0; i<A->cols; i++) {
+        total = 0.0;
+        for (j=0; j<A->rows; j++) {
+            total += A->data[j][i];
+        }
+        res[i] = total;
+    }
+    return res;
+}
+
+int fwd_diag(Matrix *A) {
+    double res = 0.0;
+    int i, j;
+
+    for (i=0; i<A->rows; i++) {
+        res += A->data[i][i];
+    }
+    return res;
+}
+
+int bk_diag(Matrix *A) {
+    double res = 0.0;
+    int i, j;
+
+    for (i=0; i<A->rows; i++) {
+        res += A->data[i][(A->rows)-i-1];
+    }
+    return res;
+}
+
+int is_magic_square(Matrix *A) {
+    if ((A->rows != A->cols) || (A->rows == 0))
+        return 0;
+
+    double *row_sums = row_sum(A);
+    double *col_sums = col_sum(A);
+    double goal = row_sums[0];
+
+    int i;
+    for (i=0; i<A->rows; i++) {
+        if ((row_sums[i] != goal) || (col_sums[i] != goal))
+            return 0;
+    }
+
+    if ((fwd_diag(A) != goal) || (bk_diag(A) != goal))
+        return 0;
+
+    return 1;
 }
 
 /* 
@@ -191,6 +247,20 @@ int main() {
     printf("D\n");
     print_matrix(D);
 
+    Matrix *E = make_matrix(3, 3);
+    E->data[0][0] = 4;
+    E->data[0][1] = 9;
+    E->data[0][2] = 2;
+    E->data[1][0] = 3;
+    E->data[1][1] = 5;
+    E->data[1][2] = 7;
+    E->data[2][0] = 8;
+    E->data[2][1] = 1;
+    E->data[2][2] = 6;
+    printf("E (MAGIC SQUARE)\n");
+    print_matrix(E);
+    
+
     double sum = matrix_sum1(A);
     printf("sum = %lf\n", sum);
 
@@ -203,5 +273,6 @@ int main() {
     }
     // should print 6, 22, 38
 
+    printf("Is E a magic square?:%i\n",is_magic_square(E));
     return 0;
 }
