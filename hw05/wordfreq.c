@@ -114,27 +114,28 @@ void g_hash_print(GList *keys, GHashTable *hash) {
 
 int main (void)
 {
-//	puts(""); // mo' pretties
-
+	// Read that file!
 	gchar *filename = FILE_LOCATION;
 	gchar *contents;
 	gssize *length = malloc(sizeof(gssize));
-
 	g_file_get_contents(filename, &contents, length, NULL);
+
+	// Format that string!
 	contents = g_ascii_strdown(contents, *length);
 	gchar_arr_print(contents);
-
 	contents = gchar_remove_punct(contents);
-//	gchar_arr_print(contents);
 
+	// Split those words!
 	gchar **split = g_strsplit(contents, " ", 0);
-	//gchar_arr2_print(split);
 
+	// Populate that histogram!
 	GHashTable *hash = g_hash_table_new( g_str_hash, g_str_equal );
 	think(split, hash);
 
+	// Show that correctness!
 	puts("\n");
 	g_hash_print(g_hash_table_get_keys(hash), hash);
 
+	// Return that 0!
     return 0;
 }
